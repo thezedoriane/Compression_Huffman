@@ -1,10 +1,11 @@
 #Projet:Compression Huffman
-m='alice.txt'
+m='alice.txt'       #nom du fichier: doit finir par .txt dans ce programme
+
 #Etape 1: Détermination de l'alphabet et des fréquences de carcatères
 
 def freq(message):
     '''Prend en paramètre un texte, 
-    et renvoie le liste des caractères le compose avec leur nombre d'occurence.'''
+    et renvoie la liste des caractères le composant avec leur nombre d'occurence.'''
     oc=[]
     caract=[]
     for i in message:
@@ -35,7 +36,7 @@ def freq_croissante(oc):
 
 def ascii_croissante(oc):
     '''Prend en paramètre une liste de caractère avec leur fréquence,
-    essaie de renvoyer la liste triée dans l'odre croissant par rapport à la fréquence et le code ascii'''
+    et renvoie la liste triée dans l'odre croissant par rapport à la fréquence et le code ascii'''
     l=freq_croissante(oc)
     l2=[]    
     l3=[]
@@ -55,10 +56,12 @@ def ascii_croissante(oc):
             l4.insert(0,a)
             l2.remove(a)
         l3+=l4
-    return l3      
-
+    return l3   
+    
+#trie des caractères par apport à leur occurence
 oc=ascii_croissante(oc)
 
+#Création du fichier txt contenant le nombre caractère, et qui renvoie à la ligne (pour chaque caractère) les caractères et leur occurrence
 f_freq=open(m[0:-4]+'_freq.txt','w')
 f_freq.close()
 l=len(oc)
@@ -72,7 +75,7 @@ f_freq.close()
     
 class Tree: 
     '''Un arbre est représenté par son noeud racine,
-    composé d'un caractère, de la frequence du caractère, de son code, et de ses enfants gauche et droit.'''
+    composé d'un caractère, de la fréquence du caractère, de son code, et de ses enfants gauche et droit.'''
     def __init__(self,caractere,frequence,code,left_child,right_child):
         self.car=caractere
         self.f=frequence
@@ -102,12 +105,14 @@ def abr(l_Tree):
     '''Créer un seul arbre à partir des arbres de la liste, et le renvoie'''
     while len(l_Tree)!=1:
         abr_bis(l_Tree)
-        
+
+#Création de l'arbre de Huffman
 T1=[Tree(i[0],i[1],[],None,None)for i in oc]
 abr(T1)
 T1=T1[0]
 
 #Etape 3: Codage du texte
+
 def encodage(T):
     '''Code les caractères à partir de la racine de l'arbre'''
     if T.c==None:
@@ -118,7 +123,8 @@ def encodage(T):
     if T.rc!=None:
         T.rc.c=T.c+'1'
         encodage(T.rc)
-
+        
+#Attribution du code binaire de chaque caractère dans l'arbre
 encodage(T1)
 
 def code_car(T,car):
@@ -137,8 +143,6 @@ def code_car(T,car):
             return lc
         if rc!=None:
             return rc
-
-#print(code_car(T1,message[0][0]))
     
 def fausse_compression(message,T):
     '''Prend en paramètre un texte et son arbre de code
@@ -149,9 +153,8 @@ def fausse_compression(message,T):
         for j in i:
             m+=code_car(T,j)
     return m
-    
-#print(fausse_compression(message,T1))
-    
+
+#Création du fichier compressé
 f_comp=open(m[0:-4]+'_comp.bin','w')
 mb=fausse_compression(message,T1)
 j='0b'
