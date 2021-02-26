@@ -15,6 +15,7 @@ def freq(message):
             oc+=[[i,nb]]
     return oc
 
+#ouverture du fichier texte et enregistrement dans la variable message 
 f=open(m,'r')
 message = f.readlines()
 message=str(message)
