@@ -1,0 +1,164 @@
+#Projet:Compression Huffman
+m='alice.txt'
+#Etape 1: Détermination de l'alphabet et des fréquences de carcatères
+
+def freq(message):
+    '''Prend en paramètre un texte, 
+    et renvoie le liste des caractères le compose avec leur nombre d'occurence.'''
+    oc=[]
+    caract=[]
+    for i in message:
+        if i not in caract:
+            nb=message.count(i)
+            caract.append(i)
+            oc+=[[i,nb]]
+    return oc
+
+f=open(m,'r')
+message = f.readlines()
+message=str(message)
+f.close()
+oc=freq(message)
+
+def freq_croissante(oc):
+    '''Prend en paramètre une liste de caractère avec leur occurrence,
+    et renvoie cette liste triée par odre croissance de fréquence.'''
+    l=[]
+    while oc!=[]:
+        a=oc[0]
+        for i in oc:
+            if a[1]<i[1]:
+                a=i
+        l.insert(0,a)
+        oc.remove(a)
+    return l 
+
+def ascii_croissante(oc):
+    '''Prend en paramètre une liste de caractère avec leur fréquence,
+    essaie de renvoyer la liste triée dans l'odre croissant par rapport à la fréquence et le code ascii'''
+    l=freq_croissante(oc)
+    l2=[]    
+    l3=[]
+    while l!=[]:
+        l2=[l[0]]
+        l.pop(0)
+        if l!=[]:
+            while l[0][1]==l2[0][1]:
+                l2.append(l[0])
+                l.pop(0)
+        l4=[]
+        while l2!=[]:
+            a=l2[0]
+            for j in l2:
+                if ord(a[0])<ord(j[0]):
+                    a=j
+            l4.insert(0,a)
+            l2.remove(a)
+        l3+=l4
+    return l3      
+
+oc=ascii_croissante(oc)
+
+f_freq=open(m[0:-4]+'_freq.txt','w')
+f_freq.close()
+l=len(oc)
+f_freq=open(m[0:-4]+'_freq.txt','a')
+f_freq.write(str(l))
+for i in oc:
+    f_freq.write('\n'+str(i[0])+'  '+str(i[1]))
+f_freq.close()
+
+#Etape 2: Construction de l'arbre
+    
+class Tree: 
+    '''Un arbre est représenté par son noeud racine,
+    composé d'un caractère, de la frequence du caractère, de son code, et de ses enfants gauche et droit.'''
+    def __init__(self,caractere,frequence,code,left_child,right_child):
+        self.car=caractere
+        self.f=frequence
+        self.c=code
+        self.lc=left_child
+        self.rc=right_child
+        
+def abr_bis(l_Tree):
+     '''Prend une liste d'arbre,
+     et créer un nouvel arbre à partir des deux arbres de plus basse fréquence 
+     avant de retirer de la liste ces deux derniers arbres.'''
+     min1=Tree(None,0,[],None,None)
+     min2=Tree(None,0,[],None,None)
+     for i in range (len(l_Tree)):
+         if l_Tree[i].f<min2.f or min2.f==0:
+             if l_Tree[i].f<min1.f or min1.f==0:
+                 min2,min1=min1,l_Tree[i]
+             else:
+                 min2=l_Tree[i]
+     t=Tree(None,min1.f+min2.f,None,min1,min2)
+     l_Tree.remove(min1)
+     l_Tree.remove(min2)
+     l_Tree.append(t)
+     return l_Tree
+    
+def abr(l_Tree):
+    '''Créer un seul arbre à partir des arbres de la liste, et le renvoie'''
+    while len(l_Tree)!=1:
+        abr_bis(l_Tree)
+        
+T1=[Tree(i[0],i[1],[],None,None)for i in oc]
+abr(T1)
+T1=T1[0]
+
+#Etape 3: Codage du texte
+def encodage(T):
+    '''Code les caractères à partir de la racine de l'arbre'''
+    if T.c==None:
+        T.c=''
+    if T.lc!=None:
+        T.lc.c=T.c+'0'
+        encodage(T.lc)
+    if T.rc!=None:
+        T.rc.c=T.c+'1'
+        encodage(T.rc)
+
+encodage(T1)
+
+def code_car(T,car):
+    '''Prend en paramètre l'abre d'encodage et le caractèere que l'on souhaite coder
+    et renvoie le code du caractère'''
+    if T.car==car:
+        return T.c
+    else:
+        if T.lc!=None:
+            lc=code_car(T.lc,car)
+        if T.rc!=None:
+            rc=code_car(T.rc,car)
+        if (T.lc==None and T.rc==None) or (lc==None and rc==None):
+            return None
+        if lc!=None:
+            return lc
+        if rc!=None:
+            return rc
+
+#print(code_car(T1,message[0][0]))
+    
+def fausse_compression(message,T):
+    '''Prend en paramètre un texte et son arbre de code
+    et renvoie le message en ayant remplacer chacun de ses caractères 
+    par sa représentation binaire sous forme de str'''
+    m=''
+    for i in message:
+        for j in i:
+            m+=code_car(T,j)
+    return m
+    
+#print(fausse_compression(message,T1))
+    
+f_comp=open(m[0:-4]+'_comp.bin','w')
+mb=fausse_compression(message,T1)
+j='0b'
+for i in mb:
+    if len(j)!=9:
+        j+=str(i)
+    else:
+        f_comp.write(chr(int(j,2)))
+        j='0b'
+f_comp.close()
