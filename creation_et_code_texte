@@ -59,7 +59,7 @@ def ascii_croissante(oc):
         l3+=l4
     return l3   
     
-#trie des caractères par apport à leur occurence
+#trie des caractères par rapport à leur occurence
 oc=ascii_croissante(oc)
 
 #Création du fichier txt contenant le nombre caractère, et qui renvoie à la ligne (pour chaque caractère) les caractères et leur occurrence
@@ -129,7 +129,7 @@ def encodage(T):
 encodage(T1)
 
 def code_car(T,car):
-    '''Prend en paramètre l'abre d'encodage et le caractèere que l'on souhaite coder
+    '''Prend en paramètre l'arbre d'encodage et le caractèere que l'on souhaite coder
     et renvoie le code du caractère'''
     if T.car==car:
         return T.c
