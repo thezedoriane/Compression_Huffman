@@ -1,7 +1,7 @@
 #Etape 4: Détermination du taux de compression
 def tx_compression(message,T):
     '''Prend en paramètre un texte et son arbre de code et renvoie son taux de compression'''
-    m1=len(message[0])
+    m1=len(message)
     m2=len(fausse_compression(message,T))
     t=1-m2/(m1*8)
     return t
