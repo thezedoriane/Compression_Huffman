@@ -1,7 +1,7 @@
 #Projet:Compression Huffman
 m='alice.txt'       #nom du fichier: doit finir par .txt dans ce programme
 
-#Etape 1: Détermination de l'alphabet et des fréquences de carcatères
+#Etape 1: Détermination de l'alphabet et des fréquences de caractères
 
 def freq(message):
     '''Prend en paramètre un texte, 
