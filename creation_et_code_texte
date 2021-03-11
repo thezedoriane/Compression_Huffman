@@ -103,7 +103,7 @@ def abr_bis(l_Tree):
      return l_Tree
     
 def abr(l_Tree):
-    '''Créer un seul arbre à partir des arbres de la liste, et le renvoie'''
+    '''Créer un seul arbre à partir des arbres de la liste'''
     while len(l_Tree)!=1:
         abr_bis(l_Tree)
 
