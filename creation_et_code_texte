@@ -124,3 +124,44 @@ def fausse_compression(message,T):
             m+=code_car(T,j)
     return m
     
+#Application du programme
+#Choix du fichier .txt
+m='alice.txt'
+    
+#Creation de la liste triee des caracteres avec leur occurrence
+f=open(m,'r')
+message = f.readlines()
+message=str(message)
+f.close()
+oc=freq(message)
+oc=ascii_croissante(oc)
+
+#Creation de l'arbre
+T1=[Tree(i[0],i[1],[],None,None)for i in oc]
+abr(T1)
+T1=T1[0]
+
+#Encodage de l'arbre
+encodage(T1)
+
+#Creation du fichier .txt contenant la liste des caracteres et leur occurrence
+f_freq=open(m[0:-4]+'_freq.txt','w')
+f_freq.close()
+l=len(oc)
+f_freq=open(m[0:-4]+'_freq.txt','a')
+f_freq.write(str(l))
+for i in oc:
+    f_freq.write('\n'+str(i[0])+'  '+str(i[1]))
+f_freq.close()
+
+#Creation du fichier compresse
+f_comp=open(m[0:-4]+'_comp.bin','w')
+mb=fausse_compression(message,T1)
+j='0b'
+for i in mb:
+    if len(j)!=9:
+        j+=str(i)
+    else:
+        f_comp.write(chr(int(j,2)))
+        j='0b'
+f_comp.close()
