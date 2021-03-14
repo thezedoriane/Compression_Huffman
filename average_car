@@ -1,15 +1,15 @@
-#Etape 5: Détermination du nombre moyen de bits de stockage d'un caractère du texte compressé
+#Etape 5: Determination du nombre moyen de bits de stockage d'un caractere du texte compresse
 def moy_bit_ssf(oc):
-    '''Prends en paramètre un texte,
-    et renvoie le nombre moyen de bits utiliser pour compresser le message sans tenir compte des occurrences'''
+    '''Prends en parametre un texte,
+    et renvoie le nombre moyen de bits utilises pour compresser le message sans tenir compte des occurrences'''
     m=0
     for i in oc:
         m+=len(code_car(T1,i[0]))
     return m/len(oc)
 
 def moy_bit_avecf(oc,T):
-    '''Prends en paramètre la liste des caractères et leur occurences,
-    et renvoie le nombre moyen de bits utiliser pour compresser le message en tenant compte des occurrences'''
+    '''Prends en parametre la liste des caracteres et leur occurences,
+    et renvoie le nombre moyen de bits utilises pour compresser le message en tenant compte des occurrences'''
     m=0
     ms=0
     for i in oc:
